@@ -43,7 +43,6 @@ int fit_the_first(int argc, char const * argv[]) {
  *  to store max 1000 entries
  */
 
-
 typedef enum HANDEDNESS HANDEDNESS;
 enum HANDEDNESS { RIGHT, LEFT, AMBIDEXTROUS, UNKNOWN, };
 
@@ -157,28 +156,32 @@ void show_handedness(person * this) {
   printf(". Handedness: %s\n", handy);
 }
 
-person constructor_dflt(
-             char const * name,
-             uint32_t age, uint32_t CNP,
-             char const * job, char const * job_short,
-             uint32_t salary,
-             char const * address_home,
-             char const * hair_colour,
-             uint32_t height, uint32_t weight,
-             HANDEDNESS handedness);
+person constructor(char const * name,
+                   uint32_t age,
+                   uint32_t CNP,
+                   char const * job,
+                   char const * job_short,
+                   uint32_t salary,
+                   char const * address_home,
+                   char const * hair_colour,
+                   uint32_t height,
+                   uint32_t weight,
+                   HANDEDNESS handedness);
 
 int fit_the_second(int argc, char const * argv[]) {
   person people[1000] = { 0, };
 
   size_t loaded = 0;
-  people[loaded++] = constructor_dflt(
-                           "A.N. Other", 35, 209,
-                           "The full monty", "monty",
-                           5801050,
-                           "This is my place, CA, USA",
-                           "hazel",
-                           1527, 53100,
-                           LEFT);
+  people[loaded++] = constructor("A.N. Other",
+                                 35,
+                                 209,
+                                 "The full monty", "monty",
+                                 5801050,
+                                 "This is my place, CA, USA",
+                                 "hazel",
+                                 1527,
+                                 53100,
+                                 LEFT);
 
   for (size_t p_ = 0; p_ < loaded; ++p_) {
     printf("Person [%4zu]\n", p_);
@@ -200,15 +203,17 @@ int fit_the_second(int argc, char const * argv[]) {
   return 0;
 }
 
-person constructor_dflt(
-             char const * name,
-             uint32_t age, uint32_t CNP,
-             char const * job, char const * job_short,
-             uint32_t salary,
-             char const * address_home,
-             char const * hair_colour,
-             uint32_t height, uint32_t weight,
-             HANDEDNESS handedness) {
+person constructor(char const * name,
+                   uint32_t age,
+                   uint32_t CNP,
+                   char const * job,
+                   char const * job_short,
+                   uint32_t salary,
+                   char const * address_home,
+                   char const * hair_colour,
+                   uint32_t height,
+                   uint32_t weight,
+                   HANDEDNESS handedness) {
   person thisone;
   strncpy(thisone.name, name,
           sizeof(thisone.name) - 1);
