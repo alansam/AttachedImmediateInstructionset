@@ -157,13 +157,22 @@ void show_handedness(person * this) {
   printf(". Handedness: %s\n", handy);
 }
 
-person build();
+person constructor_dflt(
+             char const * name,
+             uint32_t age, uint32_t CNP,
+             char const * job, char const * job_short,
+             uint32_t salary,
+             char const * address_home,
+             char const * hair_colour,
+             uint32_t height, uint32_t weight,
+             HANDEDNESS handedness);
 
 int fit_the_second(int argc, char const * argv[]) {
-  person people[1000];
+  person people[1000] = { 0, };
 
   size_t loaded = 0;
-  people[loaded++] = build("A.N. Other", 35, 209,
+  people[loaded++] = constructor_dflt(
+                           "A.N. Other", 35, 209,
                            "The full monty", "monty",
                            5801050,
                            "This is my place, CA, USA",
@@ -191,7 +200,8 @@ int fit_the_second(int argc, char const * argv[]) {
   return 0;
 }
 
-person build(char const * name,
+person constructor_dflt(
+             char const * name,
              uint32_t age, uint32_t CNP,
              char const * job, char const * job_short,
              uint32_t salary,
@@ -200,11 +210,16 @@ person build(char const * name,
              uint32_t height, uint32_t weight,
              HANDEDNESS handedness) {
   person thisone;
-  strncpy(thisone.name, name, sizeof(thisone.name));
-  strncpy(thisone.job, job, sizeof(thisone.job));
-  strncpy(thisone.job_short, job_short, sizeof(thisone.job_short));
-  strncpy(thisone.address_home, address_home, sizeof(thisone.address_home));
-  strncpy(thisone.hair_colour, hair_colour, sizeof(thisone.hair_colour));
+  strncpy(thisone.name, name,
+          sizeof(thisone.name) - 1);
+  strncpy(thisone.job, job,
+          sizeof(thisone.job) - 1);
+  strncpy(thisone.job_short, job_short,
+          sizeof(thisone.job_short) - 1);
+  strncpy(thisone.address_home, address_home,
+          sizeof(thisone.address_home) - 1);
+  strncpy(thisone.hair_colour, hair_colour,
+          sizeof(thisone.hair_colour) - 1);
   thisone.age = age;
   thisone.CNP = CNP;
   thisone.salary = salary;
