@@ -3,12 +3,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 int fit_the_first(int argc, char const * argv[]);
 int fit_the_second(int argc, char const * argv[]);
 
 int main(int argc, char const * argv[]) {
-  printf("AttachedImmediateInstructionset\n");
+  printf("AttachedImmediateInstructionset\n\n");
 
   fit_the_first(argc, argv);
   fit_the_second(argc, argv);
@@ -19,10 +20,45 @@ int main(int argc, char const * argv[]) {
 /*
  *  Write a program in C that implements a function with variable
  *  number of parameters and stores the data into an array, and
- *   returns it.
+ *  returns it.
  */
+void variprint(char const * fmt, ...);
+
 int fit_the_first(int argc, char const * argv[]) {
+  printf("In: %s\n", __func__);
+
+  variprint("dcff", 3, 'a', 1.999, 42.5);
+
   return 0;
+}
+
+void variprint(char const * fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+
+  while (*fmt != '\0') {
+    if (*fmt == 'd') {
+      int i = va_arg(args, int);
+      printf("%d\n", i);
+    }
+    else if (*fmt == 'c') {
+      // A 'char' variable will be promoted to 'int'
+      // A character literal in C is already 'int' by itself
+      int c = va_arg(args, int);
+      printf("%c\n", c);
+    }
+    else if (*fmt == 'f') {
+      double d = va_arg(args, double);
+      printf("%f\n", d);
+    }
+    ++fmt;
+  }
+
+  va_end(args);
+
+  putchar('\n');
+
+  return;
 }
 
 /*
@@ -57,8 +93,8 @@ struct person {
   uint32_t salary;  /* units.decimals an int = 120.25 == 12025 */
   char address_home[128];
   char hair_colour[20];
-  uint32_t height;  /* mm */
-  uint32_t weight;  /* g */
+  uint32_t height;  /* in mm (i.e. m to 3 decimal places) */
+  uint32_t weight;  /* in g (i.e. kg to 3 decimal places) */
   HANDEDNESS handedness;
 
   void (* show_name)(person *);
@@ -74,19 +110,18 @@ struct person {
   void (* show_handedness)(person *);
 };
 
-/*
-void show_name(person * this);
-void show_age(person * this);
-void show_CNP(person * this);
-void show_job(person * this);
-void show_job_short(person * this);
-void show_salary(person * this);
-void show_address_home(person * this);
-void show_hair_colour(person * this);
-void show_height(person * this);
-void show_weight(person * this);
-void show_handedness(person * this);
-*/
+//  TODO: Remove dead code.
+// void show_name(person * this);
+// void show_age(person * this);
+// void show_CNP(person * this);
+// void show_job(person * this);
+// void show_job_short(person * this);
+// void show_salary(person * this);
+// void show_address_home(person * this);
+// void show_hair_colour(person * this);
+// void show_height(person * this);
+// void show_weight(person * this);
+// void show_handedness(person * this);
 
 void show_name(person * this) {
   printf(". Name: %s\n", this->name);
@@ -110,7 +145,7 @@ void show_job_short(person * this) {
 
 void show_salary(person * this) {
   div_t sal = div(this->salary, 100);
-  printf(". Salary: \u00a4 %d.%d\n", sal.quot, sal.rem);
+  printf(". Salary: \u00a4 %7d.%02d\n", sal.quot, sal.rem);
 }
 
 void show_address_home(person * this) {
@@ -123,12 +158,12 @@ void show_hair_colour(person * this) {
 
 void show_height(person * this) {
   div_t height = div(this->height, 1000);
-  printf(". Height: %d.%d m\n", height.quot, height.rem);
+  printf(". Height: %3d.%03d m\n", height.quot, height.rem);
 }
 
 void show_weight(person * this) {
   div_t weight = div(this->weight, 1000);
-  printf(". Weight: %d.%d kg\n", weight.quot, weight.rem);
+  printf(". Weight: %3d.%03d kg\n", weight.quot, weight.rem);
 }
 
 void show_handedness(person * this) {
@@ -169,19 +204,43 @@ person constructor(char const * name,
                    HANDEDNESS handedness);
 
 int fit_the_second(int argc, char const * argv[]) {
+  printf("In: %s\n", __func__);
   person people[1000] = { 0, };
 
   size_t loaded = 0;
-  people[loaded++] = constructor("A.N. Other",
+  people[loaded++] = constructor("Ann Onymouse",
+                                 44,
+                                 250,
+                                 "An important job",
+                                 "important",
+                                 10000000,
+                                 "Our house, in the middle of our street, London, GB",
+                                 "blonde",
+                                 1440,
+                                 49000,
+                                 AMBIDEXTROUS);
+  people[loaded++] = constructor("A. N. Other",
                                  35,
                                  209,
-                                 "The full monty", "monty",
+                                 "The full monty",
+                                 "monty",
                                  5801050,
                                  "This is my place, CA, USA",
-                                 "hazel",
+                                 "brunette",
                                  1527,
                                  53100,
                                  LEFT);
+  people[loaded++] = constructor("Justin Alias",
+                                 22,
+                                 200,
+                                 "Less than a full monty",
+                                 "<monty",
+                                 3000000,
+                                 "This is my place, Sydney, AU",
+                                 "brown",
+                                 1966,
+                                 50100,
+                                 RIGHT);
 
   for (size_t p_ = 0; p_ < loaded; ++p_) {
     printf("Person [%4zu]\n", p_);
